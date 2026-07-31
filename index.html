@@ -555,6 +555,86 @@ code{
 .chip:hover{ border-color:var(--line-accent); color:var(--ink) }
 .chip b{ font-weight:600; color:var(--ink) }
 
+/* Puce cliquable : ouvre l'explication de l'élément concerné. */
+button.chip{
+  appearance:none; font-family:inherit; cursor:pointer; display:inline-flex; align-items:center; gap:6px;
+  transition:all var(--dur-2) var(--ease-out);
+}
+button.chip::after{
+  content:""; width:5px; height:5px; flex:0 0 auto; opacity:.32;
+  border-right:1.4px solid currentColor; border-top:1.4px solid currentColor;
+  transform:rotate(45deg); transition:opacity var(--dur-2), transform var(--dur-2);
+}
+button.chip:hover{ background:var(--surface-3); border-color:var(--line-accent); color:var(--ink); transform:translateY(-1px) }
+button.chip:hover::after{ opacity:.85; transform:rotate(45deg) translate(1px,-1px) }
+
+/* Indication discrète : « ces éléments sont cliquables ». */
+.tap-hint{
+  display:inline-flex; align-items:center; gap:7px; margin-top:14px;
+  font-size:.75rem; color:var(--ink-4);
+}
+.tap-hint svg{ width:13px; height:13px; flex:0 0 auto; opacity:.8 }
+
+/* Cartes clés et pastilles de centre, rendues actionnables */
+button.keycard,button.center-chip{
+  appearance:none; font-family:inherit; text-align:left; width:100%; cursor:pointer; display:block;
+}
+button.keycard:hover,button.center-chip:hover{ border-color:var(--line-accent) }
+button.keycard::after{
+  content:""; position:absolute; top:20px; right:20px; width:6px; height:6px;
+  border-right:1.5px solid var(--ink-4); border-top:1.5px solid var(--ink-4);
+  transform:rotate(45deg); opacity:0; transition:opacity var(--dur-2), transform var(--dur-2);
+}
+button.keycard:hover::after{ opacity:1; transform:rotate(45deg) translate(2px,-2px) }
+
+/* Lignes de tableau ouvrant un détail */
+tr[data-detail]{ cursor:pointer }
+tr[data-detail]:hover td{ background:rgba(139,108,255,.09) }
+tr[data-detail]:focus-visible{ outline:2px solid var(--electric); outline-offset:-2px }
+
+/* Schéma corporel interactif */
+.bodygraph [data-detail]{ cursor:pointer }
+.bodygraph [data-detail]:hover{ opacity:.82 }
+.bodygraph [data-detail]:focus-visible{ outline:2px solid var(--electric); outline-offset:2px }
+
+/* ==========================================================================
+   PANNEAU D'EXPLICATION
+   ========================================================================== */
+.detail-head{ display:flex; align-items:flex-start; gap:14px; flex-wrap:wrap }
+.detail-kind{
+  font-size:.66rem; letter-spacing:.2em; text-transform:uppercase; color:var(--violet-soft);
+  display:block; margin-bottom:8px;
+}
+.detail-status{ display:flex; flex-wrap:wrap; gap:7px; margin-top:16px }
+.detail-status .s{
+  display:inline-flex; align-items:center; gap:7px; padding:6px 13px; border-radius:var(--r-pill);
+  font-size:.76rem; background:var(--surface-2); border:1px solid var(--line-1); color:var(--ink-2);
+}
+.detail-status .s::before{ content:""; width:6px; height:6px; border-radius:50%; background:var(--ink-4) }
+.detail-status .s.on{ background:rgba(139,108,255,.16); border-color:rgba(168,148,255,.4); color:var(--ink) }
+.detail-status .s.on::before{ background:var(--violet); box-shadow:0 0 8px var(--violet) }
+.detail-status .s.warn{ background:rgba(243,180,83,.12); border-color:rgba(243,180,83,.3) }
+.detail-status .s.warn::before{ background:var(--amber); box-shadow:0 0 8px var(--amber) }
+
+.detail-sec{ margin-top:24px }
+.detail-sec > h4{
+  font-family:var(--font-ui); font-size:.68rem; letter-spacing:.18em; text-transform:uppercase;
+  color:var(--ink-4); margin-bottom:10px; font-weight:600;
+}
+.detail-sec p{ color:var(--ink-2); font-size:.94rem; line-height:1.7 }
+.detail-sec p + p{ margin-top:9px }
+.detail-sec p b{ color:var(--ink) }
+.detail-sec ul{ margin:0; padding:0; list-style:none; display:grid; gap:9px }
+.detail-sec ul li{ position:relative; padding-left:18px; font-size:.9rem; color:var(--ink-2); line-height:1.6 }
+.detail-sec ul li::before{ content:""; position:absolute; left:0; top:.62em; width:5px; height:5px; border-radius:50%; background:var(--violet); opacity:.75 }
+.detail-shadow{
+  margin-top:10px; padding:14px 16px; border-radius:var(--r-md);
+  border:1px solid rgba(243,180,83,.26); background:linear-gradient(120deg,rgba(243,180,83,.08),transparent);
+}
+.detail-shadow .lbl{ font-size:.66rem; letter-spacing:.16em; text-transform:uppercase; color:var(--amber); display:block; margin-bottom:7px }
+.detail-shadow p{ font-size:.9rem; color:var(--ink-2); line-height:1.62 }
+.detail-links{ display:flex; flex-wrap:wrap; gap:7px; margin-top:12px }
+
 .playbook{ display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:12px; margin-top:20px }
 .play{ padding:18px 18px 20px; border-radius:var(--r-md); background:var(--surface-1); border:1px solid var(--line-1) }
 .play .h{ display:flex; align-items:center; gap:9px; font-size:.74rem; letter-spacing:.16em; text-transform:uppercase; color:var(--violet-soft) }
@@ -1082,7 +1162,7 @@ code{
             <svg width="15" height="15" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M2 8h11m-4.5-4.5L13 8l-4.5 4.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
             <span class="spin"></span>
           </button>
-          <button class="btn btn-ghost" data-nav="method" type="button">Comprendre le fonctionnement</button>
+          <button class="btn btn-ghost" data-route="fonctionnement" type="button">Comprendre le fonctionnement</button>
         </div>
 
         <div class="assurances">
@@ -2158,6 +2238,85 @@ HD.CHANNEL_READ = {
   '47-64': "La confusion qui devient réalisation. Laissez le mental brasser&nbsp;: le sens arrive par lui-même."
 };
 
+/**
+ * Lecture des 64 portes — format compact : [thème, lecture, ombre].
+ *   thème  : deux ou trois mots, l'idée centrale
+ *   lecture: ce que la porte apporte quand elle est vécue correctement
+ *   ombre  : la déformation typique, c'est-à-dire le non-soi de cette porte
+ */
+HD.GATE_READ = {
+  1:  ['Créativité singulière', "Un besoin d'exprimer ce qui n'appartient qu'à vous. La création ne se justifie pas : elle se montre, et c'est en étant vue qu'elle prend sa valeur.", "Créer pour plaire, ou attendre la permission de se montrer."],
+  2:  ['Direction', "Vous savez vers quoi aller, sans forcément savoir comment. La direction précède les moyens, et attire ceux qui les possèdent.", "Chercher soi-même le carburant au lieu de laisser la direction faire venir les moyens."],
+  3:  ['Ordonner le nouveau', "Mettre de l'ordre dans ce qui commence. La difficulté initiale est normale : rien de neuf n'arrive déjà organisé.", "Prendre le désordre du début pour un échec et abandonner trop tôt."],
+  4:  ['Formuler une réponse', "Produire des hypothèses face au doute. C'est une réponse possible, pas encore une vérité : elle demande à être vérifiée dans le temps.", "Présenter l'hypothèse comme une certitude pour faire cesser l'inconfort du doute."],
+  5:  ['Rythme fixe', "Un rythme personnel, régulier, presque rituel. Vos habitudes ne sont pas de la rigidité : elles sont votre manière de rester disponible.", "Casser son rythme pour s'aligner sur celui des autres, et perdre sa fiabilité."],
+  6:  ['Intimité et friction', "La barrière émotionnelle qui décide qui entre et qui reste dehors. Elle s'ouvre et se ferme par vagues, indépendamment de votre volonté.", "Forcer l'ouverture quand la vague est fermée — ou l'inverse."],
+  7:  ['Guider vers demain', "Le rôle de celui qui organise le futur du groupe. Ce leadership est démocratique : il s'exerce quand il est confié.", "Vouloir diriger sans avoir été choisi, et rencontrer une résistance qu'on ne comprend pas."],
+  8:  ['Contribuer', "Mettre en avant ce qui est authentique — chez vous, et surtout chez les autres. Vous rendez visible ce qui mérite de l'être.", "Imiter ce qui marche déjà au lieu de défendre l'inhabituel."],
+  9:  ['Focus sur le détail', "Une capacité rare à soutenir l'attention sur ce qui est petit et déterminant. La puissance vient du resserrement.", "Se disperser, ou mettre ce focus sur un détail qui n'a pas d'importance."],
+  10: ['Amour de soi', "Se comporter selon ses propres principes, quel qu'en soit le prix. C'est la porte de l'authenticité au quotidien.", "Se renier pour être accepté, puis ne plus se reconnaître."],
+  11: ['Idées', "Un flux d'idées à raconter, pas à réaliser. Vous êtes un porteur de possibles : d'autres les concrétiseront.", "Croire qu'il faut mettre en œuvre soi-même chacune de ses idées, et s'épuiser."],
+  12: ['Prudence sociale', "Une parole d'une qualité particulière — quand l'humeur est juste. Le silence est ici une forme d'intelligence.", "Parler au mauvais moment et transformer une grâce en maladresse."],
+  13: ['Écouter et recueillir', "Les gens vous confient ce qu'ils ne disent nulle part ailleurs. Vous êtes le témoin, celui qui retient l'expérience commune.", "Porter les secrets d'autrui comme un poids personnel, sans jamais s'en délester."],
+  14: ['Carburant', "Une puissance de travail considérable, mise au service d'une direction. Les ressources suivent l'engagement juste.", "Travailler dur sans direction : beaucoup d'énergie dépensée pour rien."],
+  15: ['Extrêmes', "Un amour profond de l'humanité et un rythme qui n'est jamais moyen. Votre irrégularité fait partie du don.", "Vouloir être normal, et étouffer ce qui vous rend humainement large."],
+  16: ['Enthousiasme', "Un élan qui donne envie aux autres. Il devient talent lorsqu'il s'appuie sur une compétence réellement travaillée.", "L'enthousiasme sans le travail de fond : beaucoup de promesses, peu de profondeur."],
+  17: ['Opinions', "Un avis structuré, appuyé sur des faits. Il a une vraie valeur — à condition d'être demandé.", "Imposer son opinion et la voir rejetée, alors qu'elle était juste."],
+  18: ['Corriger', "Voir ce qui ne va pas dans un schéma établi et proposer l'amélioration. Un service rendu au collectif.", "La critique qui ne construit rien, dirigée vers les personnes plutôt que vers le schéma."],
+  19: ['Besoin', "Une sensibilité extrême aux besoins fondamentaux du groupe : nourriture, abri, territoire, contact.", "Ressentir le besoin sans le formuler, puis reprocher aux autres de ne pas l'avoir deviné."],
+  20: ['Le présent', "L'instant même. Ce qui se dit et se fait maintenant, sans projection ni délai.", "Parler de ce qu'on va faire au lieu de le faire."],
+  21: ['Contrôle des ressources', "La volonté de diriger ce qui vous appartient — vos moyens, votre territoire, votre travail.", "Vouloir contrôler ce qui ne vous appartient pas, y compris les personnes."],
+  22: ['Grâce', "Une ouverture sociale et une écoute qui touchent, portées par une vague émotionnelle.", "Forcer la relation quand l'humeur n'y est pas, et paraître inapproprié."],
+  23: ['Expliquer', "Rendre intelligible un insight singulier. Vous traduisez ce que personne d'autre n'a formulé.", "Le dire au mauvais moment : le génie passe alors pour de l'étrangeté."],
+  24: ['Revenir', "Le mental revient sans cesse sur la même question, jusqu'à ce que la clarté vienne d'elle-même.", "Confondre ce retour avec de la rumination, et vouloir forcer la conclusion."],
+  25: ['Innocence', "Un amour universel, sans objet particulier. Vous aimez la vie autant que les êtres.", "Perdre cette innocence après un choc, et se protéger jusqu'à se fermer."],
+  26: ['Persuasion', "La mémoire de ce qui a fonctionné, mise au service de l'accord. Un vrai talent commercial.", "L'exagération : le petit mensonge qui arrange, et qui finit par coûter cher."],
+  27: ['Prendre soin', "Nourrir, protéger, transmettre. La responsabilité envers ceux qui ne peuvent pas encore se porter seuls.", "Le soin excessif, qui empêche l'autre de grandir et vous épuise."],
+  28: ['Chercher le sens', "Le goût du risque au service d'une question : pour quoi vaut-il la peine de lutter ?", "Prendre des risques pour fuir le vide, sans jamais formuler la question."],
+  29: ['Engagement', "Dire oui et tenir jusqu'au bout. La persévérance qui transforme l'expérience en maîtrise.", "Dire oui à tout, et se retrouver engagé dans ce qui n'était pas pour vous."],
+  30: ['Désir', "Le feu du désir et du fantasme, moteur de toute expérience à venir.", "Confondre l'intensité du désir avec la certitude qu'il faut le réaliser."],
+  31: ['Leadership élu', "La voix qui dit « je dirige » — légitime lorsqu'elle a été appelée par le groupe.", "Prendre la tête sans mandat, et parler dans le vide."],
+  32: ['Durée', "Reconnaître ce qui a un avenir et ce qui n'en a pas. Un instinct de transformation prudente.", "La peur de l'échec, qui fait renoncer avant d'avoir essayé."],
+  33: ['Se retirer et raconter', "Le retrait nécessaire pour digérer l'expérience, puis la transmettre à ceux qui viennent après.", "Se retirer sans jamais revenir raconter — ou tout révéler avant d'avoir digéré."],
+  34: ['Puissance', "Une force pure, disponible pour l'action. La plus grande énergie individuelle du schéma.", "L'activité pour l'activité : occupé en permanence, sans direction ni réponse."],
+  35: ["Appétit d'expérience", "Le besoin d'avancer par le changement. Vous accumulez des expériences que peu de gens vivent.", "Le « j'ai déjà fait ça » permanent, et une insatisfaction qui ne se comble jamais."],
+  36: ['Crise', "Plonger dans le nouveau sans expérience préalable. La crise émotionnelle comme moteur d'apprentissage.", "Se jeter dans l'inexpérience par impatience, et créer des crises évitables."],
+  37: ['Accord et tendresse', "Le lien du groupe, tenu par des accords explicites. La chaleur de la famille choisie.", "Une loyauté sans contrat clair : on donne, on attend, et personne ne sait ce qui a été promis."],
+  38: ['Combattre', "Une opposition tenace au service de ce qui a du sens. La lutte donne du prix à la vie.", "Se battre par réflexe, sur des terrains qui n'en valent pas la peine."],
+  39: ['Provoquer', "Bousculer pour révéler l'esprit et la valeur réelle de l'autre.", "La provocation gratuite, qui ne cherche plus qu'à obtenir une réaction."],
+  40: ['Travail puis retrait', "La capacité de fournir pour le groupe, à condition de pouvoir se retirer ensuite pour récupérer.", "Donner sans limite, sans jamais négocier ce que l'on reçoit en retour."],
+  41: ["Début du cycle", "La pression du fantasme, qui lance toute nouvelle expérience. Tout commence par une imagination.", "Rêver l'expérience au lieu d'attendre l'occasion réelle de la vivre."],
+  42: ['Achever', "Mener les cycles jusqu'à leur terme. La croissance vient de ce qui a été fini, pas de ce qui a été commencé.", "Lâcher en cours de route, et accumuler des choses inachevées."],
+  43: ['Insight', "Une pensée qui ne ressemble à aucune autre. Le génie individuel, brut, avant sa mise en mots.", "Le dire au mauvais moment : personne n'entend, et vous vous croyez incompris."],
+  44: ['Alerte instinctive', "Une mémoire quasi olfactive des personnes : vous sentez qui est fiable et qui ne l'est pas.", "Transformer cette alerte en méfiance permanente envers tout le monde."],
+  45: ['Rassembler', "La voix qui gère et répartit les ressources du groupe. « Ce qui est à nous. »", "Confondre la gestion et la possession, et contrôler au lieu de distribuer."],
+  46: ['Amour du corps', "Être au bon endroit au bon moment, à travers le corps. La réussite arrive comme par hasard.", "Forcer sa présence là où l'on n'a rien à faire, et perdre cette chance."],
+  47: ['Donner du sens', "Reprendre le passé jusqu'à ce qu'il fasse sens. La confusion précède toujours la réalisation.", "Vouloir sortir de la confusion trop vite, et fabriquer un sens qui n'y est pas."],
+  48: ['Profondeur', "Une ressource de fond, presque un puits. Ce que vous savez est plus profond que ce que vous montrez.", "Le sentiment d'inadéquation : se croire jamais assez bon pour intervenir."],
+  49: ['Principes', "Les principes qui décident qui appartient au groupe et qui n'y appartient plus. La porte de la rupture.", "Rejeter par réflexe, sans avoir énoncé le principe qui a été franchi."],
+  50: ['Valeurs', "Les lois et les valeurs qui protègent le groupe. Un sens aigu de la responsabilité.", "Se rendre responsable de tout, y compris de ce qui ne vous incombe pas."],
+  51: ['Choc', "L'initiation par la surprise. Ce qui vous a heurté devient ce que vous êtes capable de transmettre.", "Provoquer le choc chez les autres, par compétition plutôt que par nécessité."],
+  52: ["S'arrêter", "L'immobilité qui rend la concentration possible. La pression de rester tranquille pour voir clair.", "Confondre cette immobilité avec de l'inertie, et se croire bloqué."],
+  53: ['Commencer', "La pression de démarrer un cycle nouveau. Les commencements sont votre spécialité.", "Commencer sans jamais finir, et laisser un sillage de projets abandonnés."],
+  54: ['Ambition', "La volonté de s'élever, par le travail et par les alliances justes.", "L'ambition sans reconnaissance : gravir seul, sans jamais être introduit."],
+  55: ['Esprit et abondance', "L'humeur pure, sans cause extérieure. Votre esprit décide de l'abondance que vous percevez.", "Chercher une raison à sa mélancolie et la transformer en croyance sur soi."],
+  56: ['Raconter', "Stimuler par le récit. Vous transmettez l'expérience sous forme d'histoire, et cela ouvre les autres.", "Raconter pour occuper l'espace, sans expérience réelle derrière le récit."],
+  57: ['Intuition', "Une clairaudience du présent, immédiate et silencieuse. Elle ne se répète jamais.", "La peur du lendemain, qui recouvre l'intuition d'un bruit d'anticipation."],
+  58: ['Joie de vivre', "Une vitalité qui pousse à améliorer ce qui existe. La joie est ici un moteur, pas un résultat.", "La pression d'améliorer devient critique permanente, y compris envers soi."],
+  59: ['Intimité', "La capacité de briser les barrières et d'atteindre l'autre réellement. Fécondité au sens large.", "Forcer l'intimité, ou l'éviter complètement pour ne pas se sentir exposé."],
+  60: ['Accepter la limite', "La mutation naît de la contrainte acceptée. Ce qui vous limite est exactement ce qui vous fait muter.", "Se débattre contre la limite, et bloquer la transformation qu'elle rendait possible."],
+  61: ['Mystère', "Une pression à connaître ce qui ne peut pas se savoir. L'inspiration vient de là.", "Prendre l'inspiration pour un savoir, et bâtir des certitudes sur du mystère."],
+  62: ['Nommer les détails', "Organiser le réel en faits, en noms, en preuves. C'est ce qui rend une idée transmissible.", "Se perdre dans le détail au point de ne plus voir ce qu'il servait à démontrer."],
+  63: ['Doute', "Le doute logique, qui interroge la validité d'un schéma. C'est la source de toute vérification.", "Retourner le doute contre les personnes plutôt que contre les schémas."],
+  64: ['Confusion', "Une pression d'images du passé, sans ordre apparent. Le sens finit par émerger seul.", "Vouloir donner un sens trop tôt, et forcer une conclusion sur un matériau non digéré."]
+};
+
+/** Accès sûr à la lecture d'une porte. */
+HD.gateRead = g => {
+  const r = HD.GATE_READ[g] || ['—', '', ''];
+  return { theme: r[0], read: r[1], shadow: r[2] };
+};
+
 /** Les trois circuits, pour situer chaque canal. */
 HD.CIRCUITS = {
   Individuel: "Circuit individuel — la mutation. Vous êtes là pour être différent et transmettre cette différence, à votre rythme, sans obligation de servir le groupe.",
@@ -2771,6 +2930,10 @@ const Render = (() => {
       }
     }
 
+    /* Le schéma est cliquable dès qu'un schéma réel est fourni et que
+       l'application est vivante (l'export HTML statique reste inerte). */
+    const live = !!chart && opts.interactive !== false;
+
     /* --- Centres -------------------------------------------------------- */
     for (const key of HD.CENTER_ORDER) {
       const s = HD.CENTER_SHAPES[key];
@@ -2785,32 +2948,53 @@ const Render = (() => {
       const node = s.shape === 'rect'
         ? el('rect', Object.assign({ x: s.x, y: s.y, width: s.w, height: s.h, rx: 4 }, attrs))
         : el('polygon', Object.assign({ points: s.pts }, attrs));
-      node.appendChild(el('title')).textContent =
-        `${HD.CENTERS[key].name} — ${on ? 'défini' : 'ouvert'}`;
+      const label = `${HD.CENTERS[key].name} — ${on ? 'défini' : 'ouvert'}`;
+      node.appendChild(el('title')).textContent = label;
+      if (live) {
+        node.setAttribute('data-detail', `center:${key}`);
+        node.setAttribute('tabindex', '0');
+        node.setAttribute('role', 'button');
+        node.setAttribute('aria-label', `${label} — voir l’explication`);
+      }
       gCent.appendChild(node);
     }
 
-    /* --- Numéros de portes --------------------------------------------- */
+    /* --- Portes : numéro, pastille d'activation et zone de clic --------- */
     if (showNums) {
       for (const gate of Object.keys(HD.GATE_POINTS)) {
         const g = Number(gate), p = HD.GATE_POINTS[g];
         const inP = gatesP.has(g), inD = gatesD.has(g);
         const active = inP || inD;
+
+        const grp = el('g');
+        if (active) {
+          grp.appendChild(el('circle', {
+            cx: p[0], cy: p[1], r: 6.4,
+            fill: inP && inD ? 'url(#bgBoth)' : inD ? '#ff7d9d' : '#ccd4e8'
+          }));
+        }
         const t = el('text', {
           x: p[0], y: p[1] + 2.6, 'text-anchor': 'middle',
           'font-size': 7.6, 'font-family': 'ui-monospace, monospace',
           'font-weight': active ? 700 : 400,
-          fill: active ? '#0b0818' : 'rgba(255,255,255,.34)'
+          fill: active ? '#0b0818' : 'rgba(255,255,255,.34)',
+          'pointer-events': 'none'
         });
-        if (active) {
-          const halo = el('circle', {
-            cx: p[0], cy: p[1], r: 6.4,
-            fill: inP && inD ? 'url(#bgBoth)' : inD ? '#ff7d9d' : '#ccd4e8'
-          });
-          gGate.appendChild(halo);
-        }
         t.textContent = g;
-        gGate.appendChild(t);
+        grp.appendChild(t);
+
+        // Zone de clic généreuse, invisible : le numéro seul serait trop petit.
+        grp.appendChild(el('circle', { cx: p[0], cy: p[1], r: 9, fill: 'transparent' }));
+
+        const label = `Porte ${g} — ${HD.GATE_NAMES[g]}${chart ? (active ? ' — activée' : ' — non activée') : ''}`;
+        grp.appendChild(el('title')).textContent = label;
+        if (live) {
+          grp.setAttribute('data-detail', `gate:${g}`);
+          grp.setAttribute('tabindex', '0');
+          grp.setAttribute('role', 'button');
+          grp.setAttribute('aria-label', `${label} — voir l’explication`);
+        }
+        gGate.appendChild(grp);
       }
     }
 
@@ -2819,14 +3003,28 @@ const Render = (() => {
 
   /* --- Fabriques de cartes --------------------------------------------- */
 
-  /** Carte clé (Type, Stratégie, Autorité, Profil…). */
-  function keyCard (label, value, note) {
-    return `<article class="card keycard card-hover reveal">
-      <div class="k">${escapeHtml(label)}</div>
+  /**
+   * Carte clé (Type, Stratégie, Autorité, Profil…).
+   * @param {string} [detail] spec d'explication ; sans elle, la carte est statique
+   *                          (cas de l'export HTML, qui n'embarque pas de scripts).
+   */
+  function keyCard (label, value, note, detail) {
+    const inner = `<div class="k">${escapeHtml(label)}</div>
       <div class="v grad">${escapeHtml(value)}</div>
-      ${note ? `<div class="n">${escapeHtml(note)}</div>` : ''}
-    </article>`;
+      ${note ? `<div class="n">${escapeHtml(note)}</div>` : ''}`;
+    return detail
+      ? `<button type="button" class="card keycard card-hover reveal" data-detail="${escapeHtml(detail)}"
+           aria-label="${escapeHtml(label)} : ${escapeHtml(value)} — voir l’explication">${inner}</button>`
+      : `<article class="card keycard card-hover reveal">${inner}</article>`;
   }
+
+  /** Puce cliquable ouvrant une explication. Le libellé peut contenir du HTML. */
+  const chipBtn = (spec, labelHtml) =>
+    `<button type="button" class="chip" data-detail="${escapeHtml(spec)}">${labelHtml}</button>`;
+
+  /** Mention discrète indiquant que les éléments d'un bloc sont cliquables. */
+  const tapHint = (txt = 'Cliquez sur un élément pour son explication détaillée.') =>
+    `<span class="tap-hint"><svg viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M6 2.8v6.4M6 9.2 4.3 7.5a1.1 1.1 0 0 0-1.6 1.6l3.1 3.6c.5.6 1.2.9 2 .9h2.4a2.6 2.6 0 0 0 2.6-2.6V8a1.1 1.1 0 0 0-2.2 0m0 0V7a1.1 1.1 0 0 0-2.2 0m0 0V6a1.1 1.1 0 0 0-2.1 0" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg>${escapeHtml(txt)}</span>`;
 
   /** Bloc de lecture premium. */
   function block (opts) {
@@ -2842,15 +3040,16 @@ const Render = (() => {
     </article>`;
   }
 
-  /** Grille des 9 centres. */
+  /** Grille des 9 centres — chaque pastille ouvre l'explication du centre. */
   function centersGrid (chart) {
     return `<div class="centers-grid">` + HD.CENTER_ORDER.map(k => {
       const c = HD.CENTERS[k], on = chart.centers[k].defined;
-      return `<div class="center-chip ${on ? 'on' : ''}">
+      return `<button type="button" class="center-chip ${on ? 'on' : ''}" data-detail="center:${k}"
+                aria-label="${escapeHtml(c.name)} — ${on ? 'défini' : 'ouvert'} — voir l’explication">
         <div class="t"><i></i>${escapeHtml(c.short)}</div>
         <div class="s">${escapeHtml(on ? c.defined : c.open)}</div>
-      </div>`;
-    }).join('') + `</div>`;
+      </button>`;
+    }).join('') + `</div>` + tapHint('Cliquez sur un centre pour comprendre ce qu’il gouverne chez vous.');
   }
 
   /** Playbook « ce que cela change concrètement ». */
@@ -2867,20 +3066,19 @@ const Render = (() => {
       </div>`).join('') + `</div>`;
   }
 
-  /** Tableau des 26 activations. */
+  /** Tableau des 26 activations — chaque porte ouvre son explication. */
   function activationsTable (chart) {
+    const cell = (a, cls) =>
+      `<td class="${cls}">${chipBtn(`gate:${a.gate}`, `<b>${a.gate}</b>.${a.line}`)}
+        <span class="tiny dim" style="display:block;margin-top:3px">${escapeHtml(HD.GATE_NAMES[a.gate])}</span></td>`;
     const rows = chart.activations.personality.map((p, i) => {
       const d = chart.activations.design[i];
-      return `<tr>
-        <td class="pl">${p.glyph} ${escapeHtml(p.label)}</td>
-        <td class="d"><span class="g">${d.gate}</span>.${d.line}</td>
-        <td class="p"><span class="g">${p.gate}</span>.${p.line}</td>
-      </tr>`;
+      return `<tr><td class="pl">${p.glyph} ${escapeHtml(p.label)}</td>${cell(d, 'd')}${cell(p, 'p')}</tr>`;
     }).join('');
     return `<div class="acts"><table>
       <thead><tr><th>Corps</th><th>Design (inconscient)</th><th>Personnalité (conscient)</th></tr></thead>
       <tbody>${rows}</tbody>
-    </table></div>`;
+    </table></div>${tapHint('Chaque porte est cliquable : thème, lecture, piège, et canaux auxquels elle appartient.')}`;
   }
 
   /** Bandeau de stabilité de la lecture. */
@@ -2906,11 +3104,12 @@ const Render = (() => {
       ['perspective', v.perspective], ['environment', v.environment],
       ['motivation', v.motivation], ['determination', v.determination]
     ];
-    return `<div class="grid g2" style="margin-top:18px">` + rows.map(([, x]) => `
+    return `<div class="grid g2" style="margin-top:18px">` + rows.map(([key, x]) => `
       <div class="play">
         <div class="h">${escapeHtml(x.meta.label)}</div>
         <p style="margin-top:10px;font-family:var(--font-display);font-size:1.18rem;letter-spacing:-.015em">${escapeHtml(x.value)}</p>
         <p class="tiny dim" style="margin-top:6px">Couleur ${x.color} · ton ${x.tone} · flèche ${x.arrow} — ${escapeHtml(x.meta.src)}</p>
+        <div class="chips" style="margin-top:12px">${chipBtn(`variable:${key}`, 'Que veut dire cette flèche ?')}</div>
       </div>`).join('') + `</div>`;
   }
 
@@ -2944,11 +3143,12 @@ const Render = (() => {
     const l1 = HD.LINES[chart.profileLines.conscious], l2 = HD.LINES[chart.profileLines.unconscious];
     const html = `
       <div class="keygrid">
-        ${keyCard('Type', t.name, t.share)}
-        ${keyCard('Stratégie', t.strategy, `Signature : ${t.signature}`)}
-        ${keyCard('Autorité', a.short, a.rule)}
-        ${keyCard('Profil', `${chart.profile} — ${pr.name}`, HD.DEFINITIONS[Math.min(4, chart.definition)].name)}
+        ${keyCard('Type', t.name, t.share, `type:${chart.type}`)}
+        ${keyCard('Stratégie', t.strategy, `Signature : ${t.signature}`, 'strategy')}
+        ${keyCard('Autorité', a.short, a.rule, `authority:${chart.authority}`)}
+        ${keyCard('Profil', `${chart.profile} — ${pr.name}`, HD.DEFINITIONS[Math.min(4, chart.definition)].name, `profile:${chart.profile}`)}
       </div>
+      <div style="margin-top:10px">${tapHint('Chacune de ces quatre cartes est cliquable : elle explique d’où vient le résultat et ce qu’il implique.')}</div>
 
       ${robustBanner(robust)}
 
@@ -2976,6 +3176,7 @@ const Render = (() => {
               <i class="b">Les deux</i>
               <i class="o">Inactif</i>
             </div>
+            ${tapHint('Cliquez sur un centre ou sur une porte du schéma pour l’explication correspondante.')}
           </div>
         </aside>
 
@@ -2988,13 +3189,21 @@ const Render = (() => {
               <dt>Aura</dt><dd>${escapeHtml(t.aura)}</dd>
               <dt>Question clé</dt><dd>${escapeHtml(t.question)}</dd>
               <dt>Répartition</dt><dd>${escapeHtml(t.share)}</dd>
-            </dl>`
+            </dl>
+            <div class="chips">
+              ${chipBtn(`type:${chart.type}`, 'Le type en détail')}
+              ${chipBtn('strategy', 'La stratégie')}
+              ${chipBtn('signature', `Signature : <b>${escapeHtml(t.signature)}</b>`)}
+              ${chipBtn('notself', `Non-soi : <b>${escapeHtml(t.notSelf)}</b>`)}
+            </div>`
           })}
 
           ${block({
             tag: 'Autorité', title: a.name,
             body: [escapeHtml(a.detail)],
-            extra: `<div class="chips">${a.practice.map(p => `<span class="chip">${escapeHtml(p)}</span>`).join('')}</div>`
+            extra: `<div class="play" style="margin-top:18px"><div class="h">En pratique</div>
+              <ul>${a.practice.map(p => `<li>${escapeHtml(p)}</li>`).join('')}</ul></div>
+              <div class="chips">${chipBtn(`authority:${chart.authority}`, 'Comprendre cette autorité en détail')}</div>`
           })}
 
           ${block({
@@ -3003,7 +3212,12 @@ const Render = (() => {
               escapeHtml(pr.text),
               `<b>Ligne ${chart.profileLines.conscious} · ${escapeHtml(l1.name)} (conscient).</b> ${escapeHtml(l1.text)}`,
               `<b>Ligne ${chart.profileLines.unconscious} · ${escapeHtml(l2.name)} (inconscient).</b> ${escapeHtml(l2.text)}`
-            ]
+            ],
+            extra: `<div class="chips">
+              ${chipBtn(`profile:${chart.profile}`, 'Le profil en détail')}
+              ${chipBtn(`line:${chart.profileLines.conscious}`, `Ligne <b>${chart.profileLines.conscious}</b> — ${escapeHtml(l1.name)}`)}
+              ${chipBtn(`line:${chart.profileLines.unconscious}`, `Ligne <b>${chart.profileLines.unconscious}</b> — ${escapeHtml(l2.name)}`)}
+            </div>`
           })}
 
           ${block({
@@ -3012,7 +3226,8 @@ const Render = (() => {
             extra: `<dl class="kv">
               <dt>Centres définis</dt><dd>${chart.definedCenters.map(k => escapeHtml(HD.CENTERS[k].short)).join(' · ') || '—'}</dd>
               <dt>Centres ouverts</dt><dd>${chart.openCenters.map(k => escapeHtml(HD.CENTERS[k].short)).join(' · ') || '—'}</dd>
-            </dl>`
+            </dl>
+            <div class="chips">${chipBtn(`definition:${chart.definition}`, 'Comprendre la définition')}</div>`
           })}
 
           ${block({
@@ -3027,14 +3242,17 @@ const Render = (() => {
               ? ['Chaque canal relie deux centres et fixe une manière de fonctionner qui vous est propre, disponible en permanence.']
               : ['Aucun canal complet&nbsp;: votre schéma est entièrement ouvert. Vous échantillonnez le monde plutôt que d’en fixer une part.'],
             extra: `<div class="chips">${chart.channels.map(c =>
-              `<span class="chip"><b>${c.gates[0]}–${c.gates[1]}</b> ${escapeHtml(c.name)}</span>`).join('')}</div>`
+              chipBtn(`channel:${c.gates.join('-')}`, `<b>${c.gates[0]}–${c.gates[1]}</b> ${escapeHtml(c.name)}`)).join('')}</div>
+              ${chart.channels.length ? tapHint('Cliquez sur un canal pour savoir ce qu’il installe et de quelles portes il est fait.') : ''}`
           })}
 
           ${block({
             tag: 'Croix d’incarnation', title: chart.incarnationCross.label,
             body: ['Votre croix décrit la trame de fond de votre existence — le thème que votre vie explore, indépendamment de vos choix de surface. Elle se lit à partir du Soleil et de la Terre, dans les deux thèmes.'],
             extra: `<div class="chips">${chart.incarnationCross.gates.map((g, i) =>
-              `<span class="chip"><b>${g}</b> ${escapeHtml(HD.GATE_NAMES[g])} <span class="dim">${['Soleil P','Terre P','Soleil D','Terre D'][i]}</span></span>`).join('')}</div>`
+              chipBtn(`gate:${g}`, `<b>${g}</b> ${escapeHtml(HD.GATE_NAMES[g])} <span class="dim">${['Soleil P','Terre P','Soleil D','Terre D'][i]}</span>`)).join('')}
+              ${chipBtn('cross', 'Comprendre la croix')}</div>
+              ${tapHint('Chaque porte de la croix est cliquable.')}`
           })}
         </div>
       </div>
@@ -3141,7 +3359,7 @@ const Render = (() => {
     </div>`;
   }
 
-  return { bodygraph, result, identity, questions, explorer, block, keyCard, MENUS, faq };
+  return { bodygraph, result, identity, questions, explorer, block, keyCard, chipBtn, tapHint, MENUS, faq };
 })();
 
 /* ==========================================================================
@@ -3317,8 +3535,23 @@ const Composite = (() => {
 
 const Report = (() => {
 
-  /** Les 15 sections du rapport complet, dans l'ordre imposé. */
-  function sections (chart) {
+  /**
+   * Les 15 sections du rapport complet, dans l'ordre imposé.
+   * @param {{interactive?:boolean}} opts  false pour l'export HTML autonome,
+   *        qui n'embarque aucun script : les éléments y restent inertes.
+   */
+  function sections (chart, opts = {}) {
+    const live = opts.interactive !== false;
+    /** Puce : cliquable dans l'application, statique dans un export. */
+    const dchip = (spec, labelHtml) => live
+      ? `<button type="button" class="chip" data-detail="${escapeHtml(spec)}">${labelHtml}</button>`
+      : `<span class="chip">${labelHtml}</span>`;
+    /** Attributs de ligne de tableau cliquable. */
+    const drow = (spec, label) => live
+      ? ` data-detail="${escapeHtml(spec)}" tabindex="0" role="button" aria-label="${escapeHtml(label)} — voir l’explication"`
+      : '';
+    const hint = txt => live ? Render.tapHint(txt) : '';
+
     const t = chart.typeInfo, a = chart.authorityInfo;
     const att = Synthesis.attention(chart);
     const rec = Synthesis.recommendations(chart);
@@ -3384,18 +3617,20 @@ const Report = (() => {
         <thead><tr><th>Centre</th><th>État</th><th>Lecture</th></tr></thead>
         <tbody>${HD.CENTER_ORDER.map(k => {
           const on = chart.centers[k].defined;
-          return `<tr>
+          return `<tr${drow(`center:${k}`, HD.CENTERS[k].name)}>
             <td><b>${escapeHtml(HD.CENTERS[k].name)}</b></td>
             <td class="${on ? 'on' : 'off'}">${on ? 'Défini' : 'Ouvert'}</td>
             <td>${on ? escapeHtml(HD.CENTERS[k].defined) : HD.CENTER_READ[k].w}</td>
           </tr>`;
         }).join('')}</tbody>
-      </table></div>`);
+      </table></div>${hint('Cliquez sur une ligne pour la lecture complète du centre.')}`);
 
     add('canaux', 'Canaux', chart.channels.length ? `
       <p>${chart.channels.length} canaux complets. Chaque canal relie deux centres et fixe un fonctionnement
       disponible en permanence, sans effort. Circuits représentés&nbsp;: ${circuits.join(', ')}.</p>
-      <ul>${chart.channels.map(c => `<li><b>${c.gates[0]}–${c.gates[1]} · ${escapeHtml(c.name)}</b> <span class="dim">(${escapeHtml(c.circuit)})</span><br>${HD.CHANNEL_READ[c.gates.join('-')] || ''}</li>`).join('')}</ul>
+      <ul>${chart.channels.map(c => `<li>${dchip(`channel:${c.gates.join('-')}`, `<b>${c.gates[0]}–${c.gates[1]} · ${escapeHtml(c.name)}</b>`)}
+        <span class="dim">(${escapeHtml(c.circuit)})</span><br>${HD.CHANNEL_READ[c.gates.join('-')] || ''}</li>`).join('')}</ul>
+      ${hint('Chaque canal est cliquable.')}
       ${circuits.map(c => `<div class="callout"><div class="ct">Circuit ${escapeHtml(c)}</div><p>${HD.CIRCUITS[c]}</p></div>`).join('')}
     ` : `<p>Aucun canal complet. Votre schéma est entièrement ouvert&nbsp;: vous échantillonnez l’énergie
         de votre environnement plutôt que d’en fixer une part. C’est la configuration du Réflecteur.</p>`);
@@ -3407,14 +3642,14 @@ const Report = (() => {
         <thead><tr><th>Porte</th><th>Nom</th><th>Centre</th><th>Origine</th></tr></thead>
         <tbody>${chart.gates.all.map(g => {
           const inP = chart.gates.personality.includes(g), inD = chart.gates.design.includes(g);
-          return `<tr>
+          return `<tr${drow(`gate:${g}`, `Porte ${g} — ${HD.GATE_NAMES[g]}`)}>
             <td class="num"><b>${g}</b></td>
-            <td>${escapeHtml(HD.GATE_NAMES[g])}</td>
+            <td>${escapeHtml(HD.GATE_NAMES[g])} <span class="dim">— ${escapeHtml(HD.gateRead(g).theme)}</span></td>
             <td>${escapeHtml(HD.CENTERS[HD.GATE_CENTER[g]].short)}</td>
             <td>${inP && inD ? 'Personnalité + Design' : inD ? 'Design' : 'Personnalité'}</td>
           </tr>`;
         }).join('')}</tbody>
-      </table></div>`);
+      </table></div>${hint('Cliquez sur une porte pour son thème, sa lecture et son piège.')}`);
 
     add('croix', 'Croix d’incarnation', `
       <p><b>${escapeHtml(chart.incarnationCross.label)}</b></p>
@@ -3422,7 +3657,8 @@ const Report = (() => {
       choix de surface. Elle se lit sur quatre portes&nbsp;: le Soleil et la Terre dans le thème conscient,
       puis dans le thème inconscient.</p>
       <ul>${chart.incarnationCross.gates.map((g, i) =>
-        `<li><b>Porte ${g} — ${escapeHtml(HD.GATE_NAMES[g])}</b> <span class="dim">(${['Soleil de la personnalité','Terre de la personnalité','Soleil du design','Terre du design'][i]})</span></li>`).join('')}</ul>
+        `<li>${dchip(`gate:${g}`, `<b>Porte ${g} — ${escapeHtml(HD.GATE_NAMES[g])}</b>`)}
+         <span class="dim">(${['Soleil de la personnalité','Terre de la personnalité','Soleil du design','Terre du design'][i]})</span></li>`).join('')}</ul>
       <p>L’angle <b>${escapeHtml(chart.incarnationCross.angle)}</b> découle du profil ${escapeHtml(chart.profile)}&nbsp;:
       ${escapeHtml(angleText(chart.incarnationCross.angle))}</p>`);
 
@@ -3519,7 +3755,7 @@ const Report = (() => {
    * @param {{toc?:boolean, standalone?:boolean}} opts
    */
   function renderReport (chart, opts = {}) {
-    const S = sections(chart);
+    const S = sections(chart, opts);
     const now = new Date(chart.meta.computedAt);
     const name = chart.input.fullName || chart.input.name || 'Analyse';
 
@@ -3663,12 +3899,14 @@ const Menus = (() => {
         <div class="play"><div class="h">Croix d’incarnation</div>
           <p style="margin-top:10px;font-family:var(--font-display);font-size:1.1rem">${escapeHtml(chart.incarnationCross.label)}</p>
           <div class="chips">${chart.incarnationCross.gates.map((g, i) =>
-            `<span class="chip"><b>${g}</b> <span class="dim">${['Soleil P','Terre P','Soleil D','Terre D'][i]}</span></span>`).join('')}</div>
+            Render.chipBtn(`gate:${g}`, `<b>${g}</b> <span class="dim">${['Soleil P','Terre P','Soleil D','Terre D'][i]}</span>`)).join('')}
+            ${Render.chipBtn('cross', 'Détail')}</div>
         </div>
         <div class="play"><div class="h">Définition</div>
           <p style="margin-top:10px;font-family:var(--font-display);font-size:1.1rem">${escapeHtml(chart.definitionInfo.name)}</p>
           <p class="tiny dim" style="margin-top:6px">${chart.definitionGroups.length} groupe(s) de centres reliés ·
             ${chart.definedCenters.length}/9 définis · ${chart.channels.length} canaux · ${chart.gates.all.length}/64 portes</p>
+          <div class="chips">${Render.chipBtn(`definition:${chart.definition}`, 'Détail')}</div>
         </div>
       </div>
 
@@ -3679,21 +3917,24 @@ const Menus = (() => {
         <tbody>${HD.CENTER_ORDER.map(k => {
           const on = chart.centers[k].defined;
           const gs = chart.gates.all.filter(g => HD.GATE_CENTER[g] === k);
-          return `<tr><td><b>${escapeHtml(HD.CENTERS[k].name)}</b></td>
+          return `<tr data-detail="center:${k}" tabindex="0" role="button"
+                      aria-label="${escapeHtml(HD.CENTERS[k].name)} — voir l’explication">
+            <td><b>${escapeHtml(HD.CENTERS[k].name)}</b></td>
             <td class="${on ? 'on' : 'off'}">${on ? 'Défini' : 'Ouvert'}</td>
             <td class="dim">${escapeHtml(HD.CENTERS[k].type)}</td>
             <td class="num">${gs.join(' · ') || '—'}</td></tr>`;
         }).join('')}</tbody>
-      </table></div>
+      </table></div>${Render.tapHint('Cliquez sur un centre pour sa lecture complète.')}
 
       <div class="block-head" style="margin-top:26px"><h3 style="font-size:1.05rem">Canaux définis</h3><span class="tag">${chart.channels.length}</span></div>
       ${chart.channels.length ? `<div class="datatable"><table>
         <thead><tr><th>Canal</th><th>Nom</th><th>Circuit</th><th>Centres reliés</th></tr></thead>
-        <tbody>${chart.channels.map(c => `<tr>
+        <tbody>${chart.channels.map(c => `<tr data-detail="channel:${c.gates.join('-')}" tabindex="0" role="button"
+              aria-label="Canal ${c.gates.join('–')} ${escapeHtml(c.name)} — voir l’explication">
           <td class="num"><b>${c.gates[0]}–${c.gates[1]}</b></td>
           <td>${escapeHtml(c.name)}</td><td class="dim">${escapeHtml(c.circuit)}</td>
           <td>${c.centers.map(x => escapeHtml(HD.CENTERS[x].short)).join(' ↔ ')}</td></tr>`).join('')}</tbody>
-      </table></div>` : `<p class="muted small" style="margin-top:12px">Aucun canal complet — schéma entièrement ouvert.</p>`}
+      </table></div>${Render.tapHint('Cliquez sur un canal pour sa lecture complète.')}` : `<p class="muted small" style="margin-top:12px">Aucun canal complet — schéma entièrement ouvert.</p>`}
 
       <div class="block-head" style="margin-top:26px"><h3 style="font-size:1.05rem">Portes actives et longitudes</h3><span class="tag">${chart.gates.all.length}/64</span></div>
       <div class="datatable"><table>
@@ -3701,12 +3942,12 @@ const Menus = (() => {
         <tbody>${acts.personality.map((p, i) => {
           const d = acts.design[i];
           return `<tr><td>${p.glyph} ${escapeHtml(p.label)}</td>
-            <td class="num">${d.gate}.${d.line}.${d.color}.${d.tone}</td>
+            <td class="num">${Render.chipBtn(`gate:${d.gate}`, `${d.gate}.${d.line}.${d.color}.${d.tone}`)}</td>
             <td class="num dim">${d.lon.toFixed(3)}°</td>
-            <td class="num">${p.gate}.${p.line}.${p.color}.${p.tone}</td>
+            <td class="num">${Render.chipBtn(`gate:${p.gate}`, `${p.gate}.${p.line}.${p.color}.${p.tone}`)}</td>
             <td class="num dim">${p.lon.toFixed(3)}°</td></tr>`;
         }).join('')}</tbody>
-      </table></div>
+      </table></div>${Render.tapHint('Format porte.ligne.couleur.ton — cliquez sur une porte pour son explication.')}
 
       <div class="callout" style="margin-top:26px"><div class="ct">Logique de calcul</div>
         <ul class="rsec" style="display:grid;gap:9px;margin:8px 0 0;padding:0;list-style:none">
@@ -3950,6 +4191,453 @@ const Menus = (() => {
 })();
 
 /* ==========================================================================
+ * 5g. DETAIL — l'explication derrière chaque élément cliquable
+ *
+ * Un point d'entrée unique : Detail.open('gate:20').
+ * Toute explication est contextualisée au schéma en cours lorsqu'il existe
+ * (« cette porte est activée chez vous par… »), et reste générique sinon.
+ * ========================================================================== */
+
+const Detail = (() => {
+
+  const sec = (title, body) => `<div class="detail-sec"><h4>${escapeHtml(title)}</h4>${body}</div>`;
+  const shadow = txt => `<div class="detail-shadow"><span class="lbl">Le piège</span><p>${escapeHtml(txt)}</p></div>`;
+  const chip = (spec, label) => `<button type="button" class="chip" data-detail="${escapeHtml(spec)}">${label}</button>`;
+  const status = items => `<div class="detail-status">${items.map(([txt, cls]) =>
+    `<span class="s ${cls || ''}">${txt}</span>`).join('')}</div>`;
+
+  /** Corps célestes ayant activé une porte, par thème. */
+  function activators (chart, gate) {
+    if (!chart) return { p: [], d: [] };
+    return {
+      p: chart.activations.personality.filter(a => a.gate === gate),
+      d: chart.activations.design.filter(a => a.gate === gate)
+    };
+  }
+
+  /* --- Porte ----------------------------------------------------------- */
+  function gate (g, chart) {
+    g = Number(g);
+    if (!(g >= 1 && g <= 64) || !HD.GATE_CENTER[g]) return notFound(`Porte ${g}`);
+    const info = HD.gateRead(g);
+    const centerKey = HD.GATE_CENTER[g];
+    const center = HD.CENTERS[centerKey];
+    const act = activators(chart, g);
+    const active = act.p.length || act.d.length;
+    const centerDefined = chart ? chart.centers[centerKey].defined : null;
+
+    const st = [];
+    if (chart) {
+      st.push(active ? ['Activée dans votre schéma', 'on'] : ['Non activée chez vous', '']);
+      if (act.d.length) st.push([`Design : ${act.d.map(a => `${a.glyph} ${a.label} en ${g}.${a.line}`).join(', ')}`, 'on']);
+      if (act.p.length) st.push([`Personnalité : ${act.p.map(a => `${a.glyph} ${a.label} en ${g}.${a.line}`).join(', ')}`, 'on']);
+    }
+    st.push([`Centre : ${escapeHtml(center.name)}${chart ? (centerDefined ? ' — défini' : ' — ouvert') : ''}`, centerDefined ? 'on' : '']);
+
+    // Canaux auxquels cette porte appartient, et leur état réel
+    const chans = HD.CHANNELS.filter(c => c[0] === g || c[1] === g).map(c => {
+      const partner = c[0] === g ? c[1] : c[0];
+      const complete = chart ? chart.channels.some(x => x.gates[0] === c[0] && x.gates[1] === c[1]) : null;
+      const hasPartner = chart ? chart.gates.all.includes(partner) : null;
+      return { key: `${c[0]}-${c[1]}`, name: c[2], partner, complete, hasPartner };
+    });
+
+    const hanging = chart && active && chans.length && chans.every(c => !c.complete);
+
+    let html = sec('Thème', `<p><b>${escapeHtml(info.theme)}</b></p><p>${escapeHtml(info.read)}</p>`);
+    html += shadow(info.shadow);
+
+    if (chart && active) {
+      const bodies = [...act.d, ...act.p];
+      html += sec('Ce que cela veut dire pour vous', `<p>${
+        act.d.length && act.p.length
+          ? "Cette porte est activée dans vos <b>deux thèmes</b>. Elle est à la fois consciente — vous vous y reconnaissez — et inconsciente : les autres la voient chez vous avant vous."
+          : act.d.length
+            ? "Cette porte vient de votre <b>design</b>, donc de la part inconsciente. Vous la vivez sans la décider ; ce sont souvent les autres qui vous la font remarquer."
+            : "Cette porte vient de votre <b>personnalité</b>, donc de la part consciente. Vous la reconnaissez comme vous, et vous pouvez en parler."
+      }</p><p>Ligne activée : ${bodies.map(b => `<b>${b.gate}.${b.line}</b> (${escapeHtml(b.label)})`).join(', ')}. La ligne nuance la porte — c'est elle qui, sur le Soleil, détermine votre profil.</p>`);
+    }
+
+    if (chans.length) {
+      html += sec('Canaux possibles', `<ul>${chans.map(c => {
+        const state = c.complete === null ? ''
+          : c.complete ? ' — <b>complet chez vous</b>'
+          : chart && chart.gates.all.includes(g) ? ` — incomplet : il vous manque la porte ${c.partner}`
+          : '';
+        return `<li>${chip(`channel:${c.key}`, `<b>${escapeHtml(c.key)}</b> ${escapeHtml(c.name)}`)}${state}</li>`;
+      }).join('')}</ul>`);
+    }
+
+    if (hanging) {
+      html += sec('Porte suspendue', `<p>Vous avez cette porte, mais aucune de ses portes complémentaires. En Human Design,
+        on parle de <b>porte suspendue</b> : le thème est présent en vous, mais il ne se referme pas tout seul.</p>
+        <p>Concrètement, vous êtes attiré par les personnes qui possèdent ${chans.map(c => `la porte <b>${c.partner}</b>`).join(' ou ')} —
+        en leur présence, le canal se complète et vous ressentez soudain une capacité qui ne vous est pas habituelle.
+        C'est un mécanisme d'attraction, pas un manque à combler.</p>`);
+    }
+
+    return {
+      kind: 'Porte',
+      title: `Porte ${g} — ${HD.GATE_NAMES[g]}`,
+      status: status(st),
+      html
+    };
+  }
+
+  /* --- Canal ----------------------------------------------------------- */
+  function channel (key, chart) {
+    const [a, b] = String(key).split('-').map(Number);
+    const def = HD.CHANNELS.find(c => c[0] === a && c[1] === b);
+    if (!def) return notFound(`Canal ${key}`);
+    const [, , name, circuit] = def;
+    const read = HD.CHANNEL_READ[`${a}-${b}`] || '';
+    const cA = HD.CENTERS[HD.GATE_CENTER[a]], cB = HD.CENTERS[HD.GATE_CENTER[b]];
+    const complete = chart ? chart.channels.some(x => x.gates[0] === a && x.gates[1] === b) : null;
+    const hasA = chart ? chart.gates.all.includes(a) : null;
+    const hasB = chart ? chart.gates.all.includes(b) : null;
+
+    const st = [];
+    if (chart) {
+      st.push(complete ? ['Défini chez vous', 'on']
+        : (hasA || hasB) ? ['Incomplet — une seule porte', 'warn']
+        : ['Absent de votre schéma', '']);
+    }
+    st.push([`${escapeHtml(cA.short)} ↔ ${escapeHtml(cB.short)}`, complete ? 'on' : '']);
+    st.push([`Circuit ${escapeHtml(circuit)}`, '']);
+
+    let html = sec('Ce que ce canal installe', `<p>${read}</p>`);
+
+    html += sec('Ce qui le compose', `<ul>
+      <li>${chip(`gate:${a}`, `<b>Porte ${a}</b> ${escapeHtml(HD.GATE_NAMES[a])}`)} — ${escapeHtml(HD.gateRead(a).theme)}, dans le centre ${escapeHtml(cA.name)}.</li>
+      <li>${chip(`gate:${b}`, `<b>Porte ${b}</b> ${escapeHtml(HD.GATE_NAMES[b])}`)} — ${escapeHtml(HD.gateRead(b).theme)}, dans le centre ${escapeHtml(cB.name)}.</li>
+    </ul><p>Un canal n'existe que si ses deux portes sont activées. Il relie alors définitivement les deux centres,
+    qui deviennent tous les deux définis.</p>`);
+
+    if (chart) {
+      html += sec('Chez vous', complete
+        ? `<p>Ce canal est <b>complet</b>. Ce fonctionnement vous est disponible en permanence, sans effort et sans
+           conditionnement possible : il est constant depuis votre naissance et le restera. Il définit les centres
+           ${chip(`center:${HD.GATE_CENTER[a]}`, escapeHtml(cA.short))} et ${chip(`center:${HD.GATE_CENTER[b]}`, escapeHtml(cB.short))}.</p>`
+        : (hasA || hasB)
+          ? `<p>Vous possédez <b>une seule</b> des deux portes : ${hasA ? a : b}. Le canal ne se referme pas en vous.</p>
+             <p>Vous êtes donc attiré par les personnes qui portent la porte <b>${hasA ? b : a}</b>. En leur présence,
+             le canal se complète et vous accédez temporairement à ce fonctionnement — c'est ce que le Human Design
+             appelle une connexion <b>électromagnétique</b>.</p>`
+          : `<p>Aucune des deux portes n'est activée chez vous. Ce fonctionnement ne vous appartient pas ; vous
+             pouvez le rencontrer chez les autres, et l'amplifier sans le posséder.</p>`);
+    }
+
+    html += sec('Le circuit', `<p>${HD.CIRCUITS[circuit]}</p>`);
+
+    return { kind: 'Canal', title: `Canal ${a}–${b} — ${name}`, status: status(st), html };
+  }
+
+  /* --- Centre ----------------------------------------------------------- */
+  function center (key, chart) {
+    const c = HD.CENTERS[key];
+    if (!c) return notFound(key);
+    const read = HD.CENTER_READ[key];
+    const defined = chart ? chart.centers[key].defined : null;
+    const gatesHere = Object.keys(HD.GATE_CENTER).filter(g => HD.GATE_CENTER[g] === key).map(Number).sort((x, y) => x - y);
+    const active = chart ? gatesHere.filter(g => chart.gates.all.includes(g)) : [];
+    const chans = chart ? chart.channels.filter(ch => ch.centers.includes(key)) : [];
+
+    const natures = {
+      pression:   "Centre de pression — il pousse à agir ou à penser, sans jamais dire quoi.",
+      conscience: "Centre de conscience — il produit une forme de savoir, mais ne fournit aucune énergie.",
+      expression: "Centre de manifestation — il transforme en parole et en action ce que les autres centres apportent.",
+      identité:   "Centre d'identité — il porte la direction, le sens de soi et l'amour.",
+      moteur:     "Centre moteur — il fournit de l'énergie. C'est ce qui peut faire tourner une vie, ou l'épuiser."
+    };
+
+    const st = [];
+    if (chart) st.push(defined ? ['Défini', 'on'] : ['Ouvert', 'warn']);
+    st.push([`${gatesHere.length} portes`, '']);
+    if (chart) st.push([`${active.length} activée${active.length > 1 ? 's' : ''} chez vous`, active.length ? 'on' : '']);
+
+    let html = sec('Nature de ce centre', `<p>${escapeHtml(natures[c.type] || '')}</p>`);
+
+    if (defined === true) {
+      html += sec('Défini chez vous — ce que cela signifie', `<p>${escapeHtml(c.defined)}</p>
+        <p>Un centre défini est une <b>constante</b>. Il fonctionne de la même façon toute votre vie, il ne subit pas
+        le conditionnement, et c'est lui qui influence les autres plutôt que l'inverse. Vous pouvez vous y appuyer
+        sans réserve.</p>`);
+      if (chans.length) {
+        html += sec('Ce qui le définit', `<ul>${chans.map(ch =>
+          `<li>${chip(`channel:${ch.gates.join('-')}`, `<b>${ch.gates.join('–')}</b> ${escapeHtml(ch.name)}`)}</li>`).join('')}</ul>`);
+      }
+    } else if (defined === false) {
+      html += sec('Ouvert chez vous — ce que cela signifie', `<p>${escapeHtml(c.open)}</p>
+        <p>Un centre ouvert n'est pas un manque. C'est une zone où vous <b>captez et amplifiez</b> l'énergie des
+        autres : ce que vous y ressentez ne vous appartient souvent pas. C'est aussi là que se loge l'essentiel du
+        conditionnement — et, avec le temps, une sagesse que les personnes définies n'auront jamais.</p>`);
+      html += sec('La question du non-soi', `<p>${read.q}</p>
+        <p class="dim">Cette question n'a pas à être résolue. Il suffit de la reconnaître au moment où elle agit :
+        c'est ce qui fait la différence entre subir le centre ouvert et en tirer parti.</p>`);
+      html += sec('La sagesse possible', `<p>${read.w}</p>`);
+    } else {
+      html += sec('Défini ou ouvert', `<p><b>Défini :</b> ${escapeHtml(c.defined)}</p><p><b>Ouvert :</b> ${escapeHtml(c.open)}</p>`);
+    }
+
+    if (chart && active.length) {
+      html += sec('Portes activées dans ce centre', `<div class="detail-links">${active.map(g =>
+        chip(`gate:${g}`, `<b>${g}</b> ${escapeHtml(HD.GATE_NAMES[g])}`)).join('')}</div>`);
+    }
+
+    return { kind: 'Centre', title: c.name, status: status(st), html };
+  }
+
+  /* --- Type, autorité, profil, ligne, définition ------------------------ */
+  function type (key, chart) {
+    const t = HD.TYPES[key];
+    if (!t) return notFound(key);
+    const mine = chart && chart.type === key;
+    return {
+      kind: 'Type', title: t.name,
+      status: status([[t.share, ''], [`Aura ${escapeHtml(t.aura.toLowerCase())}`, ''], ...(mine ? [['Votre type', 'on']] : [])]),
+      html: sec('En résumé', `<p>${escapeHtml(t.summary)}</p>`)
+        + sec('Stratégie', `<p><b>${escapeHtml(t.strategy)}</b></p><p>${escapeHtml(t.strategyLong)}</p>`)
+        + sec('Les deux repères', `<ul>
+            <li><b>Signature — ${escapeHtml(t.signature)}.</b> La sensation qui confirme que vous suivez votre stratégie.</li>
+            <li><b>Non-soi — ${escapeHtml(t.notSelf)}.</b> L'émotion d'alerte. Quand elle revient, vous avez agi à côté de votre mécanique.</li>
+          </ul>`)
+        + sec('Question clé', `<p>« ${escapeHtml(t.question)} »</p>`)
+        + (mine ? sec('Comment ce type a été déterminé', `<p>${escapeHtml(Report.typeDerivation(chart))}</p>`) : '')
+    };
+  }
+
+  function authority (key, chart) {
+    const a = HD.AUTHORITIES[key];
+    if (!a) return notFound(key);
+    const mine = chart && chart.authority === key;
+    return {
+      kind: 'Autorité intérieure', title: a.name,
+      status: status(mine ? [['Votre autorité', 'on']] : []),
+      html: sec('La règle', `<p><b>${escapeHtml(a.rule)}</b></p>`)
+        + sec('Ce que cela veut dire', `<p>${escapeHtml(a.detail)}</p>`)
+        + sec('En pratique', `<ul>${a.practice.map(p => `<li>${escapeHtml(p)}</li>`).join('')}</ul>`)
+        + sec('Pourquoi pas le mental', `<p>Le mental n'est jamais l'autorité, quel que soit le schéma. Il sert à
+            comprendre, à comparer, à raconter — jamais à trancher pour soi. C'est le point sur lequel Ra Uru Hu
+            n'a jamais transigé.</p>`)
+        + (mine ? sec('Comment elle a été déterminée', `<p>${escapeHtml(Report.authorityDerivation(chart))}</p>`) : '')
+    };
+  }
+
+  function profile (key, chart) {
+    const p = HD.PROFILES[key];
+    if (!p) return notFound(key);
+    const [c, u] = String(key).split('/').map(Number);
+    const mine = chart && chart.profile === key;
+    return {
+      kind: 'Profil', title: `${key} — ${p.name}`,
+      status: status(mine ? [['Votre profil', 'on']] : []),
+      html: sec('Ce que le profil décrit', `<p>${escapeHtml(p.text)}</p>`)
+        + sec('Les deux lignes', `<ul>
+            <li><b>Ligne ${c} · ${escapeHtml(HD.LINES[c].name)}</b> — part <b>consciente</b>, issue du Soleil de naissance.
+              Vous vous y reconnaissez et pouvez en parler. ${escapeHtml(HD.LINES[c].text)}</li>
+            <li><b>Ligne ${u} · ${escapeHtml(HD.LINES[u].name)}</b> — part <b>inconsciente</b>, issue du Soleil du design.
+              Les autres la voient chez vous avant vous. ${escapeHtml(HD.LINES[u].text)}</li>
+          </ul>`)
+        + sec("D'où vient ce chiffre", `<p>Le premier chiffre est la ligne du Soleil au moment de votre naissance ;
+            le second, celle du Soleil 88° d'arc plus tôt. Cet écart fixe étant constant, seules douze combinaisons
+            sont possibles sur trente-six — c'est pourquoi il n'existe pas de profil 1/1 ni 2/1.</p>`)
+        + sec('Harmonie des lignes', `<p>Les paires 1-4, 2-5 et 3-6 sont dites harmonieuses ; les autres sont
+            dissonantes. La dissonance ne crée pas de souffrance : elle désigne un challenge intérieur qui, une fois
+            reconnu, devient un moteur de maturation.</p>`)
+    };
+  }
+
+  function line (n) {
+    const l = HD.LINES[n];
+    if (!l) return notFound(`Ligne ${n}`);
+    return { kind: 'Ligne du profil', title: `Ligne ${n} — ${l.name}`, status: status([[escapeHtml(l.key), '']]),
+      html: sec('Lecture', `<p>${escapeHtml(l.text)}</p>`)
+        + sec('Où elle apparaît', `<p>Chaque activation porte une ligne (la décimale après le numéro de porte :
+            <b>20.3</b> se lit « porte 20, ligne 3 »). Sur le Soleil, elle détermine le profil ; ailleurs, elle
+            nuance la manière dont la porte s'exprime.</p>`) };
+  }
+
+  function definition (n, chart) {
+    const d = HD.DEFINITIONS[Math.min(4, Number(n))];
+    const mine = chart && chart.definition === Number(n);
+    return { kind: 'Définition', title: d.name,
+      status: status(mine ? [['Votre définition', 'on'], [`${chart.definedCenters.length}/9 centres définis`, 'on']] : []),
+      html: sec('Ce que la définition mesure', `<p>${escapeHtml(d.text)}</p>`)
+        + sec('Comment elle se calcule', `<p>On regarde les centres définis et les canaux qui les relient, puis on
+            compte les <b>groupes séparés</b>. Un seul groupe : définition unique. Deux groupes non reliés :
+            définition double, et ainsi de suite.</p>`)
+        + (mine && chart.definitionGroups.length > 1
+            ? sec('Vos groupes', `<ul>${chart.definitionGroups.map((g, i) =>
+                `<li><b>Groupe ${i + 1}</b> — ${g.map(k => chip(`center:${k}`, escapeHtml(HD.CENTERS[k].short))).join(' ')}</li>`).join('')}</ul>
+              <p>Ces groupes ne communiquent pas directement en vous. Certaines personnes, dont le schéma porte les
+              portes manquantes, font le pont — c'est souvent en leur présence que vous vous sentez « entier ».</p>`)
+            : '')
+    };
+  }
+
+  function circuit (name) {
+    return { kind: 'Circuit', title: `Circuit ${name}`, status: status([]),
+      html: sec('Ce que le circuit indique', `<p>${HD.CIRCUITS[name] || ''}</p>`)
+        + sec('Les trois circuits', `<ul>${Object.entries(HD.CIRCUITS).map(([k, v]) =>
+            `<li><b>${escapeHtml(k)}</b> — ${v}</li>`).join('')}</ul>`) };
+  }
+
+  function variable (key, chart) {
+    const meta = HD.VARIABLE[key];
+    if (!meta) return notFound(key);
+    const v = chart ? chart.variable[key] : null;
+    return { kind: 'Variable', title: meta.label,
+      status: status(v ? [[`${escapeHtml(v.value)}`, 'on'], [`Couleur ${v.color} · ton ${v.tone}`, ''], [`Flèche ${v.arrow}`, '']] : []),
+      html: sec('Ce que cette flèche décrit', `<p>${{
+          determination: "La manière dont votre corps assimile — au sens large : la nourriture, mais aussi le rythme et la forme des repas. C'est le niveau le plus corporel du Human Design.",
+          environment:   "Le type de lieu dans lequel votre corps fonctionne le mieux. Il ne s'agit pas de décoration mais de configuration : perspective, lumière, circulation, position dans l'espace.",
+          motivation:    "Ce qui met votre mental en mouvement, en arrière-plan de toutes vos décisions apparentes.",
+          perspective:   "L'angle depuis lequel votre mental perçoit le monde, avant toute analyse."
+        }[key]}</p>`)
+        + (v ? sec('Chez vous', `<p><b>${escapeHtml(v.value)}</b> — dérivé de la couleur ${v.color} de ${escapeHtml(meta.src)}.
+            Le ton ${v.tone} oriente la flèche vers la <b>${escapeHtml(v.arrow)}</b>.</p>`) : '')
+        + sec('Les six possibilités', `<ul>${Object.entries(meta.v).map(([n, label]) =>
+            `<li><b>${n} · ${escapeHtml(label)}</b>${v && +n === v.color ? ' — <b>le vôtre</b>' : ''}</li>`).join('')}</ul>`)
+        + sec('Précaution', `<p>La Variable est le niveau le plus fin du système, et le plus sensible à l'heure de
+            naissance : elle repose sur la couleur et le ton, soit des tranches de 0,156° et 0,026°. Quelques minutes
+            d'écart peuvent la changer. Traitez-la comme une piste d'expérimentation, jamais comme une prescription.</p>`) };
+  }
+
+  /** Explication générique de la croix, hors de tout schéma. */
+  function crossGeneric () {
+    return { kind: "Croix d'incarnation", title: "La croix d'incarnation", status: status([]),
+      html: sec('Ce que la croix décrit', `<p>La croix d'incarnation est la trame de fond d'une existence : le thème
+          que la vie explore quels que soient les choix de surface. C'est le niveau le plus large du schéma.</p>`)
+        + sec('Comment elle se lit', `<p>Sur quatre portes : le Soleil et la Terre du thème conscient, puis le Soleil
+            et la Terre du thème inconscient. Ces quatre portes, prises ensemble, forment la croix.</p>`)
+        + sec('Les trois angles', `<ul>
+            <li><b>Angle Droit</b> — thème personnel, vécu pour soi. Environ 70 % des schémas.</li>
+            <li><b>Juxtaposition</b> — thème fixe, tenu quoi qu'il arrive. Configuration rare.</li>
+            <li><b>Angle Gauche</b> — thème transpersonnel : la trajectoire passe par les autres.</li>
+          </ul><p>L'angle découle directement du profil.</p>`) };
+  }
+
+  function cross (chart) {
+    if (!chart) return crossGeneric();
+    const c = chart.incarnationCross;
+    const roles = ['Soleil de la personnalité', 'Terre de la personnalité', 'Soleil du design', 'Terre du design'];
+    return { kind: "Croix d'incarnation", title: c.label,
+      status: status([[escapeHtml(c.angle), 'on'], [c.gates.join(' / '), '']]),
+      html: sec('Ce que la croix décrit', `<p>La croix d'incarnation est la trame de fond d'une existence : le thème
+          que votre vie explore quels que soient vos choix de surface. Elle se lit sur quatre portes — le Soleil et la
+          Terre dans chacun des deux thèmes — et constitue le niveau le plus large du schéma.</p>`)
+        + sec('Vos quatre portes', `<ul>${c.gates.map((g, i) =>
+            `<li>${chip(`gate:${g}`, `<b>Porte ${g}</b> ${escapeHtml(HD.GATE_NAMES[g])}`)} — <span class="dim">${roles[i]}</span>.
+             ${escapeHtml(HD.gateRead(g).theme)}.</li>`).join('')}</ul>`)
+        + sec(`L'angle : ${c.angle}`, `<p>${escapeHtml({
+            'Angle Droit':   "Un thème personnel. Votre vie se déroule selon votre propre trajectoire, et les leçons vous concernent d'abord vous. Environ 70 % des schémas.",
+            'Juxtaposition': "Un thème fixe, tenu quoi qu'il arrive. Ni personnel ni transpersonnel : une position à occuper. Configuration rare.",
+            'Angle Gauche':  "Un thème transpersonnel. Votre trajectoire passe par les autres : les rencontres ne sont pas des accessoires de votre vie, elles en sont le mécanisme."
+          }[c.angle] || '')}</p><p>L'angle découle directement du profil, ici ${escapeHtml(chart.profile)}.</p>`)
+        + sec('Limite connue', `<p>Il existe 192 croix nommées. Ce registre n'est pas embarqué dans cette version :
+            votre croix est donc désignée par son angle et son quaternaire de portes, ce qui est exact, plutôt que
+            par un nom qui serait inventé.</p>`) };
+  }
+
+  function strategy (chart) {
+    if (!chart) {
+      return { kind: 'Stratégie', title: 'La stratégie', status: status([]),
+        html: sec('La seule règle', `<p>Chaque type possède une stratégie, et une seule. Elle ne dit pas <i>quoi</i>
+            faire — elle dit <b>quand</b>, et à partir de quel signal.</p>`)
+          + sec('Les quatre stratégies', `<ul>${Object.values(HD.TYPES).map(t =>
+              `<li><b>${escapeHtml(t.name)}</b> — ${escapeHtml(t.strategy.toLowerCase())}.</li>`).join('')}</ul>`)
+          + sec('Pourquoi elle prime', `<p>C'est la seule chose à expérimenter. Tout le reste d'une lecture n'a
+              d'utilité que si cette règle est tenue.</p>`) };
+    }
+    const t = chart.typeInfo;
+    return { kind: 'Stratégie', title: t.strategy,
+      status: status([[escapeHtml(t.name), 'on']]),
+      html: sec('La seule règle', `<p>${escapeHtml(t.strategyLong)}</p>`)
+        + sec('Pourquoi elle prime sur tout', `<p>La stratégie ne dit pas <i>quoi</i> faire — elle dit <b>quand</b>,
+            et à partir de quel signal. C'est la seule chose à expérimenter ; tout le reste du rapport n'a d'utilité
+            que si cette règle est tenue.</p>`)
+        + sec('Comment savoir si vous la suivez', `<ul>
+            <li><b>${escapeHtml(t.signature)}</b> revient plus souvent : vous êtes dans votre mécanique.</li>
+            <li><b>${escapeHtml(t.notSelf)}</b> revient plus souvent : vous avez agi à côté.</li>
+          </ul><p>Le repère n'est pas la réussite extérieure, mais la fréquence de ces deux sensations dans une
+          semaine ordinaire.</p>`) };
+  }
+
+  function theme (which, chart) {
+    const isSig = which === 'signature';
+    if (!chart) {
+      return { kind: isSig ? 'Signature' : 'Thème du non-soi',
+        title: isSig ? 'La signature' : 'Le thème du non-soi', status: status([]),
+        html: sec('Ce que c’est', isSig
+            ? `<p>La signature est la sensation qui accompagne une vie menée selon sa mécanique. Elle diffère selon
+               le type, et sert d'<b>indicateur</b> : elle monte quand la stratégie est suivie, elle retombe sinon.</p>`
+            : `<p>Le thème du non-soi est l'émotion d'alerte propre à chaque type. Ce n'est pas un défaut de
+               caractère, mais le signal qu'un fonctionnement emprunté a pris le dessus sur la mécanique propre.</p>`)
+          + sec('Par type', `<ul>${Object.values(HD.TYPES).map(t =>
+              `<li><b>${escapeHtml(t.name)}</b> — ${escapeHtml(isSig ? t.signature : t.notSelf)}.</li>`).join('')}</ul>`) };
+    }
+    const t = chart.typeInfo;
+    return { kind: isSig ? 'Signature' : 'Thème du non-soi',
+      title: isSig ? t.signature : t.notSelf,
+      status: status([[escapeHtml(t.name), 'on']]),
+      html: isSig
+        ? sec('Ce que c’est', `<p>La signature est la sensation qui accompagne une vie menée selon sa mécanique.
+            Pour un ${escapeHtml(t.name.toLowerCase())}, c'est <b>${escapeHtml(t.signature)}</b>.</p>
+            <p>Ce n'est pas un objectif à atteindre ni un état permanent : c'est un <b>indicateur</b>. Il monte quand
+            vous suivez votre stratégie et votre autorité, il retombe quand vous vous en écartez.</p>`)
+        : sec('Ce que c’est', `<p>Le thème du non-soi est l'émotion d'alerte propre à chaque type. Pour un
+            ${escapeHtml(t.name.toLowerCase())}, c'est <b>${escapeHtml(t.notSelf)}</b>.</p>
+            <p>Ce n'est pas un défaut de caractère. C'est le signal qu'un fonctionnement emprunté — copié sur un
+            modèle familial, ou construit en réaction à lui — a pris le dessus sur votre mécanique propre.</p>
+            <p>${escapeHtml(Synthesis.attention(chart).trap)}</p>`)
+    };
+  }
+
+  function notFound (what) {
+    return { kind: 'Élément', title: String(what), status: '',
+      html: sec('Indisponible', `<p>Aucune explication n'est enregistrée pour cet élément.</p>`) };
+  }
+
+  /* --- Aiguillage ------------------------------------------------------- */
+  function content (spec) {
+    const chart = State.chart || null;
+    const i = String(spec).indexOf(':');
+    const kind = i < 0 ? spec : spec.slice(0, i);
+    const key = i < 0 ? '' : spec.slice(i + 1);
+    switch (kind) {
+      case 'gate':       return gate(key, chart);
+      case 'channel':    return channel(key, chart);
+      case 'center':     return center(key, chart);
+      case 'type':       return type(key, chart);
+      case 'authority':  return authority(key, chart);
+      case 'profile':    return profile(key, chart);
+      case 'line':       return line(Number(key));
+      case 'definition': return definition(key, chart);
+      case 'circuit':    return circuit(key);
+      case 'variable':   return variable(key, chart);
+      case 'cross':      return cross(chart);
+      case 'strategy':   return strategy(chart);
+      case 'signature':  return theme('signature', chart);
+      case 'notself':    return theme('notself', chart);
+      default:           return notFound(spec);
+    }
+  }
+
+  /**
+   * Ouvre l'explication dans la modale.
+   * @param {string} spec      ex. « gate:20 »
+   * @param {Element} [trigger] élément cliqué, pour restituer le focus ensuite
+   */
+  function open (spec, trigger) {
+    const c = content(spec);
+    openModal(c.title, `<span class="detail-kind">${escapeHtml(c.kind)}</span>${c.status}${c.html}`, spec, trigger);
+    LOG.info('détail', spec);
+  }
+
+  return { open, content };
+})();
+
+/* ==========================================================================
  * 6. UI — navigation, parcours guidé, validation, sauvegarde
  * ========================================================================== */
 
@@ -3988,18 +4676,63 @@ function toast (msg, ms = 3200) {
 }
 
 /* --- Modale ------------------------------------------------------------ */
-function openModal (title, bodyHtml) {
+/** Élément à re-focaliser à la fermeture, et pile des explications visitées. */
+let modalReturnFocus = null;
+let detailTrail = [];
+
+function openModal (title, bodyHtml, detailSpec, trigger) {
   const m = $('#modal');
+  const alreadyOpen = m.classList.contains('open');
+  // L'élément déclencheur est passé explicitement : document.activeElement ne
+  // convient pas ici (Safari ne focalise pas les boutons au clic, et les
+  // formes SVG ou lignes de tableau ne sont pas focalisées par un clic).
+  if (!alreadyOpen) modalReturnFocus = trigger || document.activeElement;
+
+  if (detailSpec) {
+    // Navigation entre explications : on empile pour permettre le retour.
+    if (alreadyOpen && detailTrail[detailTrail.length - 1] !== detailSpec) detailTrail.push(detailSpec);
+    else if (!alreadyOpen) detailTrail = [detailSpec];
+  } else detailTrail = [];
+
   $('#modal-title').textContent = title;
   $('#modal-body').innerHTML = bodyHtml;
+
+  // Bouton « retour » lorsqu'on a navigué d'une explication à l'autre
+  const back = detailTrail.length > 1
+    ? `<button class="btn btn-ghost btn-sm" type="button" data-detail-back style="margin-top:26px">
+         <svg width="13" height="13" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M14 8H3m4.5-4.5L3 8l4.5 4.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+         Revenir</button>`
+    : '';
+  if (back) $('#modal-body').insertAdjacentHTML('beforeend', back);
+
   m.hidden = false; m.classList.add('open');
+  m.querySelector('.modal-box').scrollTop = 0;
   m.querySelector('.modal-close').focus();
   document.body.style.overflow = 'hidden';
 }
+
 function closeModal () {
   const m = $('#modal');
   m.classList.remove('open'); m.hidden = true;
   document.body.style.overflow = '';
+  detailTrail = [];
+  if (modalReturnFocus && document.contains(modalReturnFocus)) modalReturnFocus.focus({ preventScroll: true });
+  modalReturnFocus = null;
+}
+
+/** Revient à l'explication précédente de la pile. */
+function detailBack () {
+  detailTrail.pop();
+  const prev = detailTrail[detailTrail.length - 1];
+  if (!prev) { closeModal(); return; }
+  const c = Detail.content(prev);
+  const keep = detailTrail;
+  openModal(c.title, `<span class="detail-kind">${escapeHtml(c.kind)}</span>${c.status}${c.html}`);
+  detailTrail = keep;
+  if (detailTrail.length > 1) {
+    $('#modal-body').insertAdjacentHTML('beforeend',
+      `<button class="btn btn-ghost btn-sm" type="button" data-detail-back style="margin-top:26px">Revenir</button>`);
+  }
 }
 
 /* --- Navigation entre écrans ------------------------------------------ */
@@ -4592,7 +5325,7 @@ const Export = (() => {
    */
   function htmlDocument (chart) {
     const css = document.querySelector('style')?.textContent || '';
-    const svg = Render.bodygraph(chart).outerHTML;
+    const svg = Render.bodygraph(chart, { interactive: false }).outerHTML;
     const name = chart.input.fullName || chart.input.name || 'Analyse';
     const now = new Date(chart.meta.computedAt);
 
@@ -4617,7 +5350,7 @@ const Export = (() => {
     ${Render.keyCard('Profil', `${chart.profile} — ${chart.profileInfo.name}`, chart.definitionInfo.name)}
   </div>
   <div class="card card-pad" style="margin-top:18px;max-width:380px">${svg}</div>
-  <div style="margin-top:24px">${Report.renderReport(chart, { toc: false })}</div>
+  <div style="margin-top:24px">${Report.renderReport(chart, { toc: false, interactive: false })}</div>
   <p class="tiny dim" style="margin-top:36px;text-align:center">
     Rapport généré localement par l’Atelier Human Design le ${now.toLocaleString('fr-FR')} — aucune donnée transmise.
   </p>
@@ -5441,6 +6174,115 @@ const Tests = (() => {
     }
   });
 
+  /* --- Explications (Detail) ------------------------------------------- */
+
+  test('Les 64 portes ont une lecture complète', () => {
+    for (let g = 1; g <= 64; g++) {
+      const r = HD.gateRead(g);
+      if (!r.theme || r.theme === '—') throw new Error(`porte ${g} : thème manquant`);
+      if (!r.read || r.read.length < 60) throw new Error(`porte ${g} : lecture trop courte`);
+      if (!r.shadow || r.shadow.length < 25) throw new Error(`porte ${g} : piège manquant`);
+    }
+    if (Object.keys(HD.GATE_READ).length !== 64) throw new Error('le nombre de lectures ≠ 64');
+  });
+
+  test('Toute explication produit un contenu non vide', () => {
+    const specs = [];
+    for (let g = 1; g <= 64; g++) specs.push(`gate:${g}`);
+    for (const [a, b] of HD.CHANNELS) specs.push(`channel:${a}-${b}`);
+    for (const k of HD.CENTER_ORDER) specs.push(`center:${k}`);
+    for (const k of Object.keys(HD.TYPES)) specs.push(`type:${k}`);
+    for (const k of Object.keys(HD.AUTHORITIES)) specs.push(`authority:${k}`);
+    for (const k of Object.keys(HD.PROFILES)) specs.push(`profile:${k}`);
+    for (let l = 1; l <= 6; l++) specs.push(`line:${l}`);
+    for (let d = 0; d <= 4; d++) specs.push(`definition:${d}`);
+    for (const k of Object.keys(HD.CIRCUITS)) specs.push(`circuit:${k}`);
+    for (const k of Object.keys(HD.VARIABLE)) specs.push(`variable:${k}`);
+    specs.push('cross', 'strategy', 'signature', 'notself');
+
+    for (const s of specs) {
+      const c = Detail.content(s);
+      if (!c || !c.title || !c.html) throw new Error(`contenu absent : ${s}`);
+      if (c.kind === 'Élément') throw new Error(`explication non reconnue : ${s}`);
+      if (c.html.length < 120) throw new Error(`explication trop courte : ${s}`);
+      if (/undefined|\[object Object\]|NaN/.test(c.title + c.html)) throw new Error(`valeur non résolue : ${s}`);
+    }
+    if (specs.length !== 64 + 36 + 9 + 5 + 7 + 12 + 6 + 5 + 3 + 4 + 4) throw new Error(`couverture inattendue : ${specs.length}`);
+  });
+
+  test('Une explication inconnue est signalée, pas silencieuse', () => {
+    const c = Detail.content('gate:999');
+    if (!c.html.includes('Aucune explication') && !c.title.includes('999')) throw new Error('porte inexistante mal gérée');
+    if (Detail.content('n_importe_quoi').kind !== 'Élément') throw new Error('spec inconnue non signalée');
+  });
+
+  test('Les explications de porte citent leurs canaux réels', () => {
+    // La porte 20 appartient à trois canaux : 10-20, 20-34 et 20-57.
+    const html = Detail.content('gate:20').html;
+    for (const k of ['10-20', '20-34', '20-57']) {
+      if (!html.includes(`channel:${k}`)) throw new Error(`canal ${k} absent de la porte 20`);
+    }
+    // La porte 41 n'en a qu'un : 30-41.
+    const h41 = Detail.content('gate:41').html;
+    if (!h41.includes('channel:30-41')) throw new Error('canal 30-41 absent de la porte 41');
+  });
+
+  test('Les explications de canal citent leurs deux portes et leurs centres', () => {
+    for (const [a, b, name] of HD.CHANNELS) {
+      const c = Detail.content(`channel:${a}-${b}`);
+      if (!c.title.includes(name)) throw new Error(`nom absent : ${a}-${b}`);
+      if (!c.html.includes(`gate:${a}`) || !c.html.includes(`gate:${b}`)) throw new Error(`portes absentes : ${a}-${b}`);
+      const cA = HD.CENTERS[HD.GATE_CENTER[a]].name;
+      if (!c.html.includes(cA)) throw new Error(`centre absent : ${a}-${b}`);
+    }
+  });
+
+  test('L’explication est contextualisée au schéma en cours', () => {
+    const previous = State.chart;
+    State.chart = sample();
+    try {
+      const g = State.chart.gates.all[0];
+      const withChart = Detail.content(`gate:${g}`);
+      if (!/Activée dans votre schéma/.test(withChart.status)) throw new Error('activation non signalée');
+      const centre = Detail.content(`center:${State.chart.definedCenters[0]}`);
+      if (!/Défini/.test(centre.status)) throw new Error('état du centre non signalé');
+      State.chart = null;
+      const generic = Detail.content(`gate:${g}`);
+      if (/Activée dans votre schéma/.test(generic.status)) throw new Error('contexte fantôme sans schéma');
+      if (!generic.html.includes('Thème')) throw new Error('contenu générique vide');
+    } finally { State.chart = previous; }
+  });
+
+  test('L’export HTML autonome ne contient aucun bouton inerte', () => {
+    // La feuille de style est inlinée et contient des sélecteurs comme
+    // tr[data-detail] : on ne contrôle que le corps du document.
+    const body = Export.htmlDocument(sample()).replace(/<style>[\s\S]*?<\/style>/g, '');
+    if (/data-detail=/.test(body)) throw new Error('éléments cliquables dans un document sans script');
+    if (/class="[^"]*tap-hint/.test(body)) throw new Error('invitation à cliquer dans un document statique');
+    if (/<button/.test(body)) throw new Error('bouton inerte dans un document sans script');
+  });
+
+  test('Tous les éléments cliquables du rapport ont une explication', () => {
+    const chart = sample();
+    const html = Render.result(chart, null) + Report.renderReport(chart) + Menus.calcul(chart);
+    const specs = [...html.matchAll(/data-detail="([^"]+)"/g)].map(m => m[1].replace(/&amp;/g, '&'));
+    if (specs.length < 60) throw new Error(`seulement ${specs.length} éléments cliquables`);
+    for (const s of new Set(specs)) {
+      if (Detail.content(s).kind === 'Élément') throw new Error(`spec sans explication : ${s}`);
+    }
+  });
+
+  test('Aucun bouton inerte dans le document', () => {
+    const ACTIONABLE = ['data-detail','data-action','data-route','data-tab','data-menu','data-next',
+                        'data-prev','data-close','data-goto','data-toc','data-detail-back','data-id'];
+    const dead = [...document.querySelectorAll('button')].filter(b => {
+      if (b.classList.contains('modal-close')) return false;   // câblé par data-close sur le parent
+      if (b.type === 'submit') return false;
+      return !ACTIONABLE.some(a => b.hasAttribute(a)) && !b.closest('[data-action],[data-route],[data-detail]');
+    }).map(b => (b.textContent.trim() || b.getAttribute('aria-label') || '?').slice(0, 40));
+    if (dead.length) throw new Error(`${dead.length} bouton(s) sans action : ${dead.join(' | ')}`);
+  });
+
   /* --- Exécution ------------------------------------------------------- */
   function run () {
     const results = cases.map(c => {
@@ -5493,6 +6335,30 @@ function bindGlobalActions () {
   /* --- Navigation, onglets, menus (délégation globale) ----------------- */
   document.addEventListener('click', async e => {
     if (e.target.closest('[data-close]')) { e.preventDefault(); closeModal(); return; }
+
+    // Retour à l'explication précédente
+    if (e.target.closest('[data-detail-back]')) { e.preventDefault(); detailBack(); return; }
+
+    // Explications : puces, cartes, lignes de tableau, éléments du schéma.
+    // closest() ne traverse pas le SVG en HTML classique, d'où le repli sur
+    // une remontée manuelle via parentNode (les nœuds SVG n'ont pas closest
+    // dans les navigateurs les plus anciens encore rencontrés).
+    const detailEl = e.target.closest
+      ? e.target.closest('[data-detail]')
+      : null;
+    const svgDetail = detailEl || (() => {
+      let n = e.target;
+      while (n && n !== document) {
+        if (n.getAttribute && n.getAttribute('data-detail')) return n;
+        n = n.parentNode;
+      }
+      return null;
+    })();
+    if (svgDetail) {
+      e.preventDefault();
+      Detail.open(svgDetail.getAttribute('data-detail'), svgDetail);
+      return;
+    }
 
     const route = e.target.closest('[data-route]');
     if (route) { e.preventDefault(); Router.go(route.dataset.route); return; }
@@ -5598,6 +6464,13 @@ function bindGlobalActions () {
     // Menus d'exploration : Entrée / Espace
     const card = e.target.closest?.('.menu-card');
     if (card && (e.key === 'Enter' || e.key === ' ')) { e.preventDefault(); toggleMenuSection(card.dataset.menu); }
+
+    // Explications sur les éléments non natifs (lignes de tableau, formes SVG)
+    if (e.key === 'Enter' || e.key === ' ') {
+      const el = e.target;
+      const spec = el?.getAttribute?.('data-detail');
+      if (spec && el.tagName !== 'BUTTON') { e.preventDefault(); Detail.open(spec, el); }
+    }
 
     // Diagnostic silencieux : Ctrl/Cmd + Maj + D
     if ((e.ctrlKey || e.metaKey) && e.shiftKey && (e.key === 'D' || e.key === 'd')) { e.preventDefault(); LOG.toggle(); }
@@ -5790,7 +6663,8 @@ else boot();
 /* Surface d'inspection pour le développement — sans effet sur l'interface. */
 window.HDAtelier = {
   CONFIG, HD, Astro, Engine, Provider, Render, Report, Synthesis, Composite,
-  Menus, Store, History, Export, Router, Tests, LOG, State, TZ, CHART_SHAPE,
+  Menus, Detail, Store, History, Export, Router, Tests, LOG, State, TZ, CHART_SHAPE,
+  openDetail: (spec, trigger) => Detail.open(spec, trigger),
   // Fonctions publiques attendues par l'intégration
   renderReport: (chart, opts) => Report.renderReport(chart || State.chart, opts),
   renderHistory,
